@@ -12,7 +12,6 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        System.out.println("Working Directory = " + System.getProperty("user.dir"));
         String input = getFileContent(args);
         int[] memory = initMemory();
         String[] actions = parseInput(input);
@@ -59,7 +58,7 @@ public class Main {
     }
 
     private static String getFileContent(String[] args) throws IOException {
-        InputStream inputStream = new FileInputStream("src/" + args[0]);
+        InputStream inputStream = new FileInputStream(ºargs[0]);
         StringBuilder input = new StringBuilder();
         Scanner sc = null;
         try {
