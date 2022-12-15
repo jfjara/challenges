@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
+import java.util.Stack;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
@@ -11,13 +12,15 @@ public class Main {
     public static final int MAX_MEMORY = 1048576;
 
     public static void main(String[] args) throws IOException {
-
         String input = getFileContent(args);
         int[] memory = initMemory();
         String[] actions = parseInput(input);
 
+        Stack<Integer> stack = new Stack<>();
+
         int memoryPointer = 0;
         int i = 0;
+
         while (i < actions.length) {
             switch (actions[i]) {
                 case "\uD83D\uDC49":
@@ -41,11 +44,17 @@ public class Main {
                 case "\uD83E\uDD1C":  //right
                     if (memory[memoryPointer] == 0) {
                         i = jumpAfterNextPunchLeft(actions, i + 1);
+                    } else  {
+                        stack.push(i);
                     }
                     break;
                 case "\uD83E\uDD1B": //left
                     if (memory[memoryPointer] != 0) {
-                        i = jumpAfterPreviousPunchRight(actions, i - 1);
+                        i = stack.pop();
+                        stack.push(i);
+                        //i = jumpAfterPreviousPunchRight(actions, i - 1);
+                    } else {
+                        stack.pop();
                     }
                     break;
                 case "\uD83D\uDC4A":
@@ -58,7 +67,7 @@ public class Main {
     }
 
     private static String getFileContent(String[] args) throws IOException {
-        InputStream inputStream = new FileInputStream(ºargs[0]);
+        InputStream inputStream = new FileInputStream(args[0]);
         StringBuilder input = new StringBuilder();
         Scanner sc = null;
         try {
@@ -78,6 +87,7 @@ public class Main {
         return input.toString();
     }
 
+    // with this method is too slooooooooowwwly. dont use it
     private static int jumpAfterPreviousPunchRight(String[] actions, int index) {
         int nestedClosed = 0;
         for (int i = index; i >= 0; i--) {
